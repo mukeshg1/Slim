@@ -20,8 +20,13 @@ To run the application in development, you can run these commands
 	cd [my-app-name]
 	php composer.phar start
 
-Run this command in the application directory to run the test suite
+To Fetch all the users, type this in browser:
 
-	php composer.phar test
 
-That's it! Now go build something cool.
+	 localhost:8080/user
+
+
+To Fetch a user with id, type this in browser:
+
+
+	 localhost:8080/user/{id}
