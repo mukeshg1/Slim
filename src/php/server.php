@@ -50,6 +50,45 @@ $app->get('/user', function(Request $request, Response $respose)
     }	
 });
 
+//Add user to the database
+$app->post('/user/add', function(Request $request, Response $respose)
+{
+
+	require_once ('C:\xampp\htdocs\slimapiCRUD\src\FileMakerCWP/FileMaker.php');
+
+	$layout_name = 'CRUD';
+
+	//New FileMaker Instantiation
+	$fm = new FileMaker();
+	$fm->setProperty('database', 'CRUD');
+	$fm->setProperty('hostspec', '172.16.9.42');
+	$fm->setProperty('username', 'admin');
+	$fm->setProperty('password', 'mindfire');
+
+	//Receive datas
+	$name = $request['name'];
+	$address = $request['address'];
+	$dob = $request['dob'];
+	$email = $request['email'];
+
+
+	$fmquery = $fm->newAddCommand($layout_name);
+	$fmquery->setField("name", $name);
+	$fmquery->setField("address", $address);
+	$fmquery->setField("dob", $dob);
+	$fmquery->setField("email", $email);
+
+	$result = $fmquery->execute();
+	if(FileMaker::isError($result))
+	{
+		echo "Error".$result;
+	}
+	else
+	{
+		echo "User Added";		
+	}
+});
+
 
 
 
