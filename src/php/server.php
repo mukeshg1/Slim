@@ -34,8 +34,8 @@ $app->get('/user', function(Request $request, Response $respose)
     $layout_object = $fm->getLayout($layout_name);
 	$field_objects = $layout_object->getFields();
 	$arr2 = array();
+	$arr3 = array();
 	$arr4 = array();
-	$arr3 = array(array());
 
     foreach ($records as $record){
     	$recid = $record->getRecordId();
@@ -52,8 +52,10 @@ $app->get('/user', function(Request $request, Response $respose)
 			//echo  $field_name.': '.$field_value.'<br>';
 		}
 		$arr3 = array_merge($arr3,$arr2);
+		echo json_encode($arr3);
 	}
-	return json_encode($arr3);	
+	//return json_encode($arr3);
+		
 });
 
 //Add user to the database
@@ -141,6 +143,48 @@ $app->get('/user/{recid}', function(Request $request, Response $respose, array $
 		//echo  $field_name.': '.$field_value.'<br>';
 	 }
 	 return json_encode($arr2);
+});
+
+
+
+//Delete a record by Id
+$app->post('/user/delete/{recid}', function(Request $request, Response $respose, array $args)
+{
+
+	require_once ('C:\xampp\htdocs\FileMakerCWP/FileMaker.php');
+
+	$layout_name = 'CRUD';
+
+	//New FileMaker Instantiation
+	$fm = new FileMaker();
+	$fm->setProperty('database', 'CRUD');
+	$fm->setProperty('hostspec', '172.16.9.42');
+	$fm->setProperty('username', 'admin');
+	$fm->setProperty('password', 'mindfire');
+
+
+	$recid = $args['recid'];
+    $record = $fm->getRecordById($layout_name, $recid);
+
+	$connected = $fm->listLayouts();
+
+	$layout_object = $fm->getLayout($layout_name);
+
+	$field_objects = $layout_object->getFields();
+
+	If(FileMaker::isError($connected)){
+	        echo "Error:".$connected;
+	        exit;
+	}
+	$fmquery = $fm->newDeleteCommand($layout_name,$recid);
+	$result = $fmquery->execute();
+	IF(FileMaker::isError($result)){
+		echo $result->getMessage();
+		exit;
+	}
+	else{
+		return 'Deleted';
+	}
 });
 
 
