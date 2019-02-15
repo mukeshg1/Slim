@@ -8,7 +8,7 @@ $app = new \Slim\App;
 $app->get('/user', function(Request $request, Response $respose)
 {
 
-	require_once ('C:\xampp\htdocs\slimapiCRUD\src\FileMakerCWP/FileMaker.php');
+	require_once ('C:\xampp\htdocs\FileMakerCWP/FileMaker.php');
 
 	$layout_name = 'CRUD';
 
@@ -32,7 +32,10 @@ $app->get('/user', function(Request $request, Response $respose)
     $records = $result->getRecords();
 
     $layout_object = $fm->getLayout($layout_name);
-    $field_objects = $layout_object->getFields();
+	$field_objects = $layout_object->getFields();
+	$arr2 = array();
+	$arr4 = array();
+	$arr3 = array(array());
 
     foreach ($records as $record){
     	$recid = $record->getRecordId();
@@ -44,17 +47,20 @@ $app->get('/user', function(Request $request, Response $respose)
 			$field_value = htmlspecialchars($field_value);
 			$field_value = nl2br($field_value);
 
-			echo  $field_name.': '.$field_value.'<br>';
+			$arr1 = array($field_name=>$field_value);
+			$arr2 = array_merge($arr2,$arr1);
+			//echo  $field_name.': '.$field_value.'<br>';
 		}
-		echo '<br>';
-    }	
+		$arr3 = array_merge($arr3,$arr2);
+	}
+	return json_encode($arr3);	
 });
 
 //Add user to the database
 $app->post('/user/add', function(Request $request, Response $respose)
 {
 
-	require_once ('C:\xampp\htdocs\slimapiCRUD\src\FileMakerCWP/FileMaker.php');
+	require_once ('C:\xampp\htdocs\FileMakerCWP/FileMaker.php');
 
 	$layout_name = 'CRUD';
 
@@ -94,7 +100,7 @@ $app->post('/user/add', function(Request $request, Response $respose)
 $app->get('/user/{recid}', function(Request $request, Response $respose, array $args)
 {
 
-	require_once ('C:\xampp\htdocs\slimapiCRUD\src\FileMakerCWP/FileMaker.php');
+	require_once ('C:\xampp\htdocs\FileMakerCWP/FileMaker.php');
 
 	$layout_name = 'CRUD';
 
@@ -123,15 +129,18 @@ $app->get('/user/{recid}', function(Request $request, Response $respose, array $
 		echo "Error, record doesn't exist.";
 		exit;
 	}
+	$arr2 = array();
 	foreach ($field_objects as $field_object) {
 		$field_name = $field_object->getName();
 		$field_value = $record->getField($field_name);
 		$field_value = htmlspecialchars($field_value);
 		$field_value = nl2br($field_value);
-		//JSONSetElement("{$field_name:$field_valued}";JSONObject);
-		echo  $field_name.': '.$field_value.'<br>';
-		//$myJSON;
+		
+		$arr1 = array($field_name=>$field_value);
+		$arr2 = array_merge($arr2,$arr1);
+		//echo  $field_name.': '.$field_value.'<br>';
 	 }
+	 return json_encode($arr2);
 });
 
 
