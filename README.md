@@ -22,7 +22,6 @@ To run the application in development, you can run these commands
 
 To Fetch all the users, type this in browser:
 
-
 	 localhost:8080/user
 
 
